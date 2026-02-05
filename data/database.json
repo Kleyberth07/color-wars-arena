@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": "admin001",
+      "email": "admin@colorwars.ve",
+      "passHash": "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "phone": "+58 424-0000000",
+      "ageConfirmed": true,
+      "balance": 0,
+      "wins": 0,
+      "isAdmin": true
+    }
+  ],
+  "transactions": [],
+  "matches": []
+}

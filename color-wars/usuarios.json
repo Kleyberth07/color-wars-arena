@@ -1,0 +1,23 @@
+{
+  "users": [
+    {
+      "email": "ttkfrancea@gmail.com",
+      "password": "klkl",
+      "tel": "04144708220",
+      "balance": 10,
+      "ganancia_total": 0
+    },
+    {
+      "email": "litekrea@gmail.com",
+      "password": "1212",
+      "balance": 0,
+      "ganancia_total": 0
+    },
+    {
+      "email": "",
+      "password": "",
+      "avatar": "",
+      "balance": 0
+    }
+  ]
+}

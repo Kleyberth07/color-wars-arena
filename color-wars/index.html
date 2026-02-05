@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Color Wars Arena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root { --c: #00f2ff; --m: #ff00e5; --bg: #030812; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; overflow: hidden; }
+        .bg-grid { position: fixed; display: grid; grid-template-columns: repeat(10, 1fr); width: 100vw; height: 100vh; z-index: -1; opacity: 0.1; }
+        .cell { border: 0.1px solid #222; aspect-ratio: 1; }
+        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .logo { font-family: 'Orbitron'; font-size: 3.5rem; font-weight: 900; margin: 0; text-align: center; }
+        .v-c { color: var(--c); text-shadow: 0 0 20px var(--c); }
+        .v-m { color: var(--m); text-shadow: 0 0 20px var(--m); }
+        .login-box { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid var(--c); backdrop-filter: blur(10px); width: 280px; margin-top: 20px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--c); color: #000; border: none; border-radius: 10px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px var(--c); }
+        .avatar-label { display: block; width: 70px; height: 70px; border: 2px dashed var(--c); border-radius: 50%; margin: 0 auto 10px; cursor: pointer; background-size: cover; background-position: center; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid" id="grid"></div>
+    <div class="hero">
+        <h1 class="logo v-c">COLOR</h1><h1 class="logo v-m">WARS</h1>
+        <div class="login-box">
+            <label for="ai" class="avatar-label" id="ap" style="background-image:url('https://cdn-icons-png.flaticon.com/512/149/149071.png')"></label>
+            <input type="file" id="ai" accept="image/*" style="display:none">
+            <input type="email" id="em" placeholder="CORREO">
+            <input type="password" id="ps" placeholder="CONTRASEÑA">
+            <button onclick="entrar()">ENTRAR A LA ARENA</button>
+        </div>
+    </div>
+    <script>
+        const g = document.getElementById('grid'); for(let i=0; i<100; i++) g.innerHTML += '<div class="cell"></div>';
+        let ava = ""; document.getElementById('ai').onchange = e => {
+            const r = new FileReader(); r.onload = () => { ava = r.result; document.getElementById('ap').style.backgroundImage = `url(${ava})`; };
+            r.readAsDataURL(e.target.files[0]);
+        };
+        async function entrar() {
+            const res = await fetch('/api/reg', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: document.getElementById('em').value, password: document.getElementById('ps').value, avatar: ava })
+            });
+            if(res.ok) {
+                const user = await res.json();
+                localStorage.setItem('cw_user', JSON.stringify(user));
+                window.location.replace('/dashboard.html'); // Cambio a replace para forzar carga
+            }
+        }
+    </script>
+</body>
+</html>

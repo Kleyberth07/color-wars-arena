@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arena Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root { --cyan: #00D1FF; --magenta: #FF00E5; --bg: #02050a; }
+        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; text-align: center; }
+        .header { padding: 30px; background: linear-gradient(to bottom, #0a1224, transparent); }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--cyan); margin: 0 auto 10px; background-size: cover; box-shadow: 0 0 15px var(--cyan); }
+        .balance-card { background: rgba(255,255,255,0.02); margin: 20px; padding: 30px; border-radius: 25px; border: 1px solid rgba(0,209,255,0.2); }
+        .val { font-family: 'Orbitron'; font-size: 3rem; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+        .btn { width: 120px; padding: 15px; border-radius: 12px; border: none; font-family: 'Orbitron'; font-weight: bold; margin: 10px; cursor: pointer; }
+        .btn-c { background: var(--cyan); color: #000; }
+        .btn-m { background: transparent; border: 2px solid var(--magenta); color: var(--magenta); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+        .modal { width: 80%; background: #0a0f1a; padding: 25px; border-radius: 20px; border: 1px solid var(--cyan); }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #222; color: #fff; border-radius: 8px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="avatar" id="ava"></div>
+        <div id="mail" style="color:var(--cyan)">CARGANDO...</div>
+    </div>
+    <div class="balance-card">
+        <div style="font-size: 0.8rem; letter-spacing: 2px;">SALDO DISPONIBLE</div>
+        <div class="val" id="bal">$0.00</div>
+        <button class="btn btn-c" onclick="ov('m-rec',1)">RECARGAR</button>
+        <button class="btn btn-m" onclick="ov('m-ret',1)">RETIRAR</button>
+    </div>
+
+    <div id="m-rec" class="overlay"><div class="modal">
+        <h3 style="color:var(--cyan)">PAGO MÓVIL BDV</h3>
+        <p>V-30522091 | 0414-4708220</p>
+        <input type="number" id="mc" placeholder="Monto $">
+        <input type="number" id="rc" placeholder="Referencia (6 dígitos)">
+        <button class="btn btn-c" style="width:100%" onclick="rep('carga')">REPORTAR</button>
+        <p onclick="ov('m-rec',0)" style="color:#555">CERRAR</p>
+    </div></div>
+
+    <div id="m-ret" class="overlay"><div class="modal" style="border-color:var(--magenta)">
+        <h3 style="color:var(--magenta)">SOLICITAR RETIRO</h3>
+        <input type="number" id="mr" placeholder="Monto $">
+        <input type="text" id="r1" placeholder="Nombre y Apellido">
+        <input type="number" id="r2" placeholder="Cédula">
+        <input type="text" id="r3" placeholder="Banco">
+        <input type="number" id="r4" placeholder="Teléfono Pago Móvil">
+        <button class="btn btn-m" style="width:100%; background:var(--magenta); color:#000" onclick="rep('retiro')">RETIRAR</button>
+        <p onclick="ov('m-ret',0)" style="color:#555">CERRAR</p>
+    </div></div>
+
+    <script>
+        const u = JSON.parse(localStorage.getItem('cw_user'));
+        if(u.avatar) document.getElementById('ava').style.backgroundImage = `url(${u.avatar})`;
+        document.getElementById('mail').innerText = u.email;
+        document.getElementById('bal').innerText = '$' + u.balance.toFixed(2);
+        function ov(id, s){ document.getElementById(id).style.display=s?'flex':'none'; }
+        async function rep(tipo){
+            const data = {
+                email: u.email, tipo,
+                monto: (tipo=='carga')?document.getElementById('mc').value:document.getElementById('mr').value,
+                info: (tipo=='carga')?document.getElementById('rc').value: `${document.getElementById('r1').value} | ${document.getElementById('r2').value} | ${document.getElementById('r3').value} | ${document.getElementById('r4').value}`
+            };
+            await fetch('/api/reportar', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+            alert('ENVIADO'); ov('m-'+tipo.substring(0,3),0);
+        }
+    </script>
+</body>
+</html>

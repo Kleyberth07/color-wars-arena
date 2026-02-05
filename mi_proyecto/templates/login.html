@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 COLOR WARS ARENA 💰</title>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --pink: #ff0080; --blue: #00d4ff; --bg: #0a0015; --gold: #ffd700; }
+        body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: white; margin: 0; overflow: hidden; }
+        .nebula { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.1), transparent); z-index: -1; }
+        .container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .cyber-card { 
+            background: rgba(15, 0, 30, 0.95); 
+            border: 2px solid var(--blue); 
+            border-radius: 25px; 
+            padding: 40px; 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2), inset 0 0 20px rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(15px);
+        }
+
+        .title-main { font-family: 'Audiowide'; font-size: 1.8em; text-shadow: 0 0 15px var(--blue); margin-bottom: 30px; }
+        
+        .tab-container { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid #333; color: #888; cursor: pointer; border-radius: 8px; font-family: 'Audiowide'; font-size: 0.8em; transition: 0.3s; }
+        .tab-btn.active { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 10px var(--blue); background: rgba(0, 212, 255, 0.05); }
+
+        .cyber-input { width: 100%; padding: 14px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: white; border-radius: 12px; margin-bottom: 15px; font-size: 1em; outline: none; transition: 0.3s; }
+        .cyber-input:focus { border-color: var(--blue); box-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
+
+        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 12px; font-family: 'Audiowide'; font-size: 1.1em; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-login { background: var(--blue); color: #000; box-shadow: 0 0 20px var(--blue); }
+        .btn-reg { background: var(--pink); color: #fff; box-shadow: 0 0 20px var(--pink); }
+
+        .hidden { display: none; }
+        
+        /* Dashboard High Detail */
+        .balance-box { border: 1px solid var(--gold); border-radius: 20px; padding: 25px; margin: 20px 0; background: rgba(255, 215, 0, 0.05); }
+        .amount { font-family: 'Audiowide'; font-size: 3.5em; color: var(--gold); text-shadow: 0 0 25px var(--gold); }
+    </style>
+</head>
+<body>
+    <div class="nebula"></div>
+    <div class="container">
+        {% if view == 'access' %}
+        <div class="cyber-card">
+            <h1 class="title-main" id="formTitle">ARENA LOGIN</h1>
+            
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchForm('login')">LOGIN</button>
+                <button class="tab-btn" onclick="switchForm('reg')">REGISTRO</button>
+            </div>
+
+            <form action="/login" method="POST" id="loginForm">
+                <input type="text" name="email" class="cyber-input" placeholder="USUARIO / EMAIL" required>
+                <input type="password" name="password" class="cyber-input" placeholder="CONTRASEÑA" required>
+                <button type="submit" class="btn-action btn-login">ENTRAR ⚡</button>
+            </form>
+
+            <form action="/registrar" method="POST" id="regForm" class="hidden">
+                <input type="email" name="email" class="cyber-input" placeholder="CORREO ELECTRÓNICO" required>
+                <input type="tel" name="phone" class="cyber-input" placeholder="NÚMERO CELULAR" required>
+                <input type="password" name="password" class="cyber-input" placeholder="CREAR CLAVE" required>
+                <p style="font-size: 0.7em; color: var(--pink); margin-bottom: 15px;">* Requerido ser mayor de 18 años</p>
+                <button type="submit" class="btn-action btn-reg">UNIRSE A LA GUERRA ⚔️</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="cyber-card" style="border-color: var(--gold);">
+            <p style="color: var(--pink); letter-spacing: 3px; font-weight: 900;">{{ msg if msg else "SESIÓN ACTIVA" }}</p>
+            <h2 style="font-family: 'Audiowide'; margin: 15px 0;">{{ user }}</h2>
+            <div class="balance-box">
+                <p style="color: #888; margin: 0;">DISPONIBLE</p>
+                <div class="amount">$100.00</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <button class="btn-action btn-login" style="font-size: 0.8em; padding: 12px;">RECARGAR</button>
+                <button class="btn-action btn-reg" style="font-size: 0.8em; padding: 12px;">RETIRAR</button>
+            </div>
+            <button class="btn-action" style="background: #222; color: white; margin-top: 20px;" onclick="location.href='/'">LOGOUT</button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function switchForm(type) {
+            const loginF = document.getElementById('loginForm');
+            const regF = document.getElementById('regForm');
+            const title = document.getElementById('formTitle');
+            const btns = document.querySelectorAll('.tab-btn');
+
+            if(type === 'login') {
+                loginF.classList.remove('hidden');
+                regF.classList.add('hidden');
+                title.innerText = 'ARENA LOGIN';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                loginF.classList.add('hidden');
+                regF.classList.remove('hidden');
+                title.innerText = 'NUEVO GUERRERO';
+                btns[1].classList.add('active');
+                btns[0].classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

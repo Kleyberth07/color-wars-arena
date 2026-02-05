@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Admin | Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-g: #00ff88; --neon-r: #ff0055; --cyan: #00D1FF; }
+        body { background: #02050a; color: #fff; font-family: 'Share Tech Mono', monospace; padding: 20px; }
+        h1 { font-family: 'Orbitron'; text-align: center; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: rgba(255,255,255,0.05); border: 1px solid #222; border-radius: 15px; padding: 20px; position: relative; overflow: hidden; }
+        .card.carga { border-left: 5px solid var(--neon-g); }
+        .card.retiro { border-left: 5px solid var(--neon-r); }
+        .tag { position: absolute; top: 10px; right: 10px; font-size: 0.6rem; padding: 3px 8px; border-radius: 5px; background: #000; }
+        .monto { font-size: 1.5rem; color: #fff; margin: 10px 0; font-family: 'Orbitron'; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-family: 'Orbitron'; font-size: 0.6rem; cursor: pointer; transition: 0.3s; }
+        .btn-ok { background: var(--neon-g); color: #000; box-shadow: 0 0 10px rgba(0,255,136,0.3); }
+        .btn-no { background: var(--neon-r); color: #fff; }
+        button:hover { transform: scale(1.05); opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <h1>CENTRAL DE OPERACIONES</h1>
+    <div id="lista" class="grid"></div>
+
+    <script>
+        async function load(){
+            const r = await fetch('/api/admin/ver');
+            const d = await r.json();
+            document.getElementById('lista').innerHTML = d.pendientes.map(t => `
+                <div class="card ${t.tipo}">
+                    <div class="tag">${t.fecha}</div>
+                    <div style="color:var(--cyan); font-size:0.8rem;">${t.email}</div>
+                    <div class="monto">$${parseFloat(t.monto).toFixed(2)}</div>
+                    <div style="font-size:0.7rem; color:#888;">REF/DATOS: ${t.info}</div>
+                    <div class="btn-group">
+                        <button class="btn-ok" onclick="op(${t.id},'aprobar')">APROBAR</button>
+                        <button class="btn-no" onclick="op(${t.id},'rechazar')">RECHAZAR</button>
+                    </div>
+                </div>
+            `).join('') || '<p style="text-align:center; width:100%; color:#444;">ESPERANDO TRANSMISIONES...</p>';
+        }
+        async function op(id, accion){
+            await fetch('/api/admin/accion', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id, accion})
+            });
+            load();
+        }
+        setInterval(load, 3000); load();
+    </script>
+</body>
+</html>

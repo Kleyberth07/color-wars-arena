@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Color Wars Arena</title>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+body{margin:0;background:#000;color:white;display:flex;flex-direction:column;align-items:center}
+#board{display:grid;grid-template-columns:repeat(6,60px);gap:6px;margin-top:20px}
+.cell{width:60px;height:60px;background:#222;border-radius:10px;
+display:flex;align-items:center;justify-content:center;
+font-size:20px;box-shadow:0 0 10px cyan}
+.blue{background:#0033ff}
+.red{background:#aa0000}
+</style>
+</head>
+<body>
+<h1>Color Wars Arena</h1>
+<div id="board"></div>
+
+<script>
+const socket = io();
+const boardEl = document.getElementById("board");
+let myColor = null;
+
+socket.on("init", data => {
+  myColor = data.color;
+});
+
+socket.on("state", data => {
+  boardEl.innerHTML = "";
+  data.board.forEach((cell, i) => {
+    const d = document.createElement("div");
+    d.className = "cell";
+    if (cell.owner) d.classList.add(cell.owner);
+    d.innerText = cell.atoms || "";
+    d.onclick = () => socket.emit("move", i);
+    boardEl.appendChild(d);
+  });
+});
+</script>
+</body>
+</html>
