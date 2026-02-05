@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Color Wars</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .neon-card { background: rgba(17, 24, 39, 0.95); border: 2px solid #ec4899; border-radius: 12px; }
+    .neon-text-magenta { color: #ec4899; text-shadow: 0 0 10px #ec4899; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold text-center mb-8 neon-text-magenta">CONTROL DE OPERACIONES</h1>
+    <div class="neon-card p-6">
+      <h2 class="text-2xl font-bold mb-4">Pagos por Aprobar</h2>
+      <div id="transactions-list" class="space-y-4 text-gray-300">
+        </div>
+    </div>
+  </div>
+</body>
+</html>

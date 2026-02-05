@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Color Wars Arena Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { background: #050505; color: #00f2ff; font-family: 'Courier New', monospace; }
+        .neon-border { border: 2px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; }
+        .cell { width: 50px; height: 50px; border: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body class="p-5">
+    <div class="max-w-md mx-auto">
+        <div class="neon-border p-4 mb-5 flex justify-between items-center bg-black">
+            <div>
+                <p class="text-xs text-gray-400">CREDITOS:</p>
+                <p id="user-balance" class="text-2xl font-bold">$0.00</p>
+            </div>
+            <button onclick="showDeposit()" class="bg-green-600 text-white px-4 py-2 rounded text-xs font-bold">RECARGAR</button>
+        </div>
+
+        <div id="game-board" class="grid grid-cols-6 gap-1 bg-gray-900 p-2 neon-border">
+            </div>
+
+        <div id="payment-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 p-10">
+            <div class="neon-border p-5 bg-gray-900">
+                <h2 class="text-xl mb-4 text-magenta-500">RECARGAR SALDO</h2>
+                <p class="text-sm text-white">Envía tu Pago Móvil a:</p>
+                <div class="bg-black p-3 my-3 text-yellow-400 text-sm">
+                    BANCO: Banesco<br>
+                    TEL: 0424-XXXXXXX<br>
+                    RIF: V-12345678
+                </div>
+                <input id="ref-pago" type="text" placeholder="Número de Referencia" class="w-full p-2 mb-4 bg-black border border-cyan-500">
+                <button onclick="reportarPago()" class="w-full bg-cyan-600 py-2 font-bold">INFORMAR PAGO</button>
+                <button onclick="closeDeposit()" class="w-full mt-2 text-red-500 text-xs">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        // Lógica para renderizar el tablero y manejar los pagos...
+        function showDeposit() { document.getElementById('payment-modal').style.display = 'block'; }
+        function closeDeposit() { document.getElementById('payment-modal').style.display = 'none'; }
+    </script>
+</body>
+</html>

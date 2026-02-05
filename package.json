@@ -1,0 +1,15 @@
+{
+  "name": "color-wars-arena",
+  "version": "1.0.0",
+  "description": "Juego 1vs1 de explosión atómica",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5"
+  }
+}
